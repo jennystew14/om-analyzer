@@ -633,7 +633,7 @@ def render_swot_box(title, items, css_class):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def extract_om(pdf_bytes):
-   client = anthropic.Anthropic(api_key=st.secrets.get("ANTHROPIC_API_KEY", None))
+    client = anthropic.Anthropic()
     pdf_b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
 
     message = client.messages.create(
