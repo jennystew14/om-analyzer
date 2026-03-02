@@ -120,18 +120,46 @@ st.markdown("""
     .main-header h1 {
         margin: 0; font-size: 1.8rem; font-weight: 700; color: white !important;
     }
+   .main-header * {
+        color: white !important;
+    }
     .main-header p {
-        margin: 0.3rem 0 0 0; font-size: 0.95rem; opacity: 0.8; color: #B0C4DE !important;
+        color: #B0C4DE !important;
     }
 
-    /* ─── Upload area ─── */
+   /* ─── Upload area ─── */
     .upload-zone {
-        background: white;
-        border: 2px dashed #3B7DD8;
+        background: linear-gradient(135deg, #1B2A4A 0%, #2C3E6B 50%, #3B7DD8 100%);
+        border: 2px dashed rgba(255,255,255,0.4);
         border-radius: 16px;
         padding: 3rem 2rem;
         text-align: center;
         margin: 1rem 0;
+    }
+
+    /* Upload page text — force white */
+    .upload-zone label,
+    .upload-zone span,
+    .upload-zone p,
+    .upload-zone div,
+    .upload-zone small,
+    .upload-zone [data-testid="stFileUploader"] *,
+    .upload-zone [data-testid="stFileUploaderDropzone"] *,
+    .upload-zone [data-testid="stFileUploaderDropzoneInstructions"] *,
+    .upload-zone .stFileUploader *,
+    .upload-zone button {
+        color: white !important;
+    }
+    .upload-zone button {
+        border-color: rgba(255,255,255,0.6) !important;
+        background-color: rgba(255,255,255,0.1) !important;
+    }
+    .upload-zone button:hover {
+        background-color: rgba(255,255,255,0.25) !important;
+    }
+    .upload-zone svg {
+        fill: white !important;
+        stroke: white !important;
     }
 
     /* ─── KPI Cards ─── */
