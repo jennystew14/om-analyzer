@@ -262,8 +262,9 @@ def extract_om(pdf_bytes):
 st.markdown("""<div class="main-header"><h1 style="color:white !important;margin:0;font-size:1.8rem;font-weight:700;">🏢 Multifamily OM Analyzer</h1><p style="color:#B0C4DE !important;margin:0.3rem 0 0 0;font-size:0.95rem;">Upload an Offering Memorandum and get instant investment analysis</p></div>""",unsafe_allow_html=True)
 if "extracted" not in st.session_state: st.session_state.extracted=None
 if "models" not in st.session_state: st.session_state.models=None
+
+if st.session_state.extracted is None:
     c1,c2,c3=st.columns([1,2,1])
-    with c2:
         st.markdown('<div class="upload-zone">',unsafe_allow_html=True)
         uf=st.file_uploader("Drop your Offering Memorandum here",type=["pdf"],label_visibility="visible")
         st.markdown('</div>',unsafe_allow_html=True)
