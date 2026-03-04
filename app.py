@@ -74,7 +74,11 @@ st.markdown("""
     .dataframe { font-size: 0.85rem !important; }
     .stMarkdown p, .stMarkdown li, .stMarkdown span { color: #2D2D2D !important; }
     .stMarkdown strong { color: #1B2A4A !important; }
-    [data-testid="stNumberInput"] label { color: #2D2D2D !important; font-weight: 500 !important; }
+    [data-testid="stNumberInput"] label { color: #2D2D2D !important; font-weight: 500 !important; }[data-testid="stNumberInput"] label { color: #2D2D2D !important; font-weight: 500 !important; }
+    .main-header h1, .main-header p { color: white !important; -webkit-text-fill-color: white !important; }
+    .main-header p { color: #B0C4DE !important; -webkit-text-fill-color: #B0C4DE !important; }
+    [data-testid="stMarkdownContainer"] .main-header h1 { color: white !important; -webkit-text-fill-color: white !important; }
+    [data-testid="stMarkdownContainer"] .main-header p { color: #B0C4DE !important; -webkit-text-fill-color: #B0C4DE !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -256,9 +260,8 @@ def extract_om(pdf_bytes):
     return json.loads(txt)
 
 st.markdown("""<div class="main-header"><h1 style="color:white !important;margin:0;font-size:1.8rem;font-weight:700;">🏢 Multifamily OM Analyzer</h1><p style="color:#B0C4DE !important;margin:0.3rem 0 0 0;font-size:0.95rem;">Upload an Offering Memorandum and get instant investment analysis</p></div>""",unsafe_allow_html=True)
+if "extracted" not in st.session_state: st.session_state.extracted=None
 if "models" not in st.session_state: st.session_state.models=None
-
-if st.session_state.extracted is None:
     c1,c2,c3=st.columns([1,2,1])
     with c2:
         st.markdown('<div class="upload-zone">',unsafe_allow_html=True)
