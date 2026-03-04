@@ -255,8 +255,7 @@ def extract_om(pdf_bytes):
     if txt.startswith("```"): txt=txt.split("\n",1)[1]; txt=txt.rsplit("```",1)[0]
     return json.loads(txt)
 
-st.markdown('<div class="main-header"><h1>🏢 Multifamily OM Analyzer</h1><p>Upload an Offering Memorandum and get instant investment analysis</p></div>',unsafe_allow_html=True)
-if "extracted" not in st.session_state: st.session_state.extracted=None
+st.markdown('<div class="main-header"><h1 style="color:white !important;margin:0;font-size:1.8rem;font-weight:700;">🏢 Multifamily OM Analyzer</h1><p style="color:#B0C4DE !important;margin:0.3rem 0 0 0;font-size:0.95rem;">Upload an Offering Memorandum and get instant investment analysis</p></div>',unsafe_allow_html=True)if "extracted" not in st.session_state: st.session_state.extracted=None
 if "models" not in st.session_state: st.session_state.models=None
 
 if st.session_state.extracted is None:
