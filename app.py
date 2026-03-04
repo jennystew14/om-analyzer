@@ -28,8 +28,7 @@ st.markdown("""
     .main-header h1 { color: white !important; font-size: 1.8rem !important; font-weight: 700 !important; margin: 0 !important; }
     .main-header p { color: #B0C4DE !important; font-size: 0.95rem !important; margin: 0.3rem 0 0 0 !important; }
     .stApp p, .stApp span, .stApp li, .stApp div, .stApp label { color: #2D2D2D; }
-    .main-header p, .main-header h1, .upload-zone p, .upload-zone span, .upload-zone div, .upload-zone label { color: white !important; }
-    .upload-zone { background: linear-gradient(135deg, #1B2A4A 0%, #2C3E6B 50%, #3B7DD8 100%); border: 2px dashed rgba(255,255,255,0.4); border-radius: 16px; padding: 3rem 2rem; text-align: center; margin: 1rem 0; }
+.main-header [data-testid="stMarkdownContainer"] p, .main-header [data-testid="stMarkdownContainer"] h1, .main-header [data-testid="stMarkdownContainer"] span { color: white !important; }    .upload-zone { background: linear-gradient(135deg, #1B2A4A 0%, #2C3E6B 50%, #3B7DD8 100%); border: 2px dashed rgba(255,255,255,0.4); border-radius: 16px; padding: 3rem 2rem; text-align: center; margin: 1rem 0; }
     [data-testid="stFileUploader"] label, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] div, [data-testid="stFileUploader"] small { color: white !important; }
     [data-testid="stFileUploaderDropzone"] { background: transparent !important; border-color: rgba(255,255,255,0.3) !important; }
     [data-testid="stFileUploaderDropzone"] *, [data-testid="stFileUploaderDropzoneInstructions"] * { color: white !important; }
