@@ -15,7 +15,7 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     .stApp p, .stApp span, .stApp li, .stApp div, .stApp label { color: #2D2D2D; }
     .stTabs [data-baseweb="tab-list"] { gap: 0px; background-color: #1B2A4A; border-radius: 10px; padding: 4px; }
-    .stTabs [data-baseweb="tab"] { color: rgba(255,255,255,1) !important; font-weight: 600 !important; font-size: 0.9rem !important; padding: 0.6rem 1.2rem !important; border-radius: 8px !important; background-color: transparent !important; }
+    .stTabs [data-baseweb="tab"] { color: rgba(255,255,255,1) !important; -webkit-text-fill-color: white !important; font-weight: 600 !important; font-size: 0.9rem !important; padding: 0.6rem 1.2rem !important; border-radius: 8px !important; background-color: transparent !important; }
     .stTabs [data-baseweb="tab"]:hover { color: white !important; background-color: rgba(255,255,255,0.1) !important; }
     .stTabs [aria-selected="true"] { color: white !important; background-color: #3B7DD8 !important; }
     .stTabs [data-baseweb="tab-highlight"] { display: none; }
