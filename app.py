@@ -262,9 +262,7 @@ if "models" not in st.session_state: st.session_state.models=None
 if st.session_state.extracted is None:
     c1,c2,c3=st.columns([1,2,1])
     with c2:
-        st.markdown('<div class="upload-zone">',unsafe_allow_html=True)
-        uf=st.file_uploader("Drop your Offering Memorandum here",type=["pdf"],label_visibility="visible")
-        st.markdown('</div>',unsafe_allow_html=True)
+        uf=st.file_uploader("Drop your Offering Memorandum here",type=["pdf"],label_visibility="visible")xs
         if uf:
             with st.status("Analyzing your OM...",expanded=True) as status:
                 st.write("📤 Sending PDF to Claude..."); 
