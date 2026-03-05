@@ -29,12 +29,11 @@ st.markdown("""
     .main-header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
     [data-testid="stMarkdownContainer"] .main-header h1 { color: white !important; -webkit-text-fill-color: white !important; }
     .upload-zone { background: linear-gradient(135deg, #1B2A4A 0%, #2C3E6B 50%, #3B7DD8 100%); border: 2px dashed rgba(255,255,255,0.4); border-radius: 16px; padding: 3rem 2rem; text-align: center; margin: 1rem 0; }
-    [data-testid="stFileUploader"] label, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] div, [data-testid="stFileUploader"] small { color: white !important; }
+    [data-testid="stFileUploader"] label, [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] p, [data-testid="stFileUploader"] div, [data-testid="stFileUploader"] small { color: #2D2D2D !important; }
     [data-testid="stFileUploaderDropzone"] { background: transparent !important; border-color: rgba(255,255,255,0.3) !important; }
-    [data-testid="stFileUploaderDropzone"] *, [data-testid="stFileUploaderDropzoneInstructions"] * { color: white !important; }
-    [data-testid="stFileUploader"] button, [data-testid="stFileUploaderDropzone"] button { color: white !important; border-color: rgba(255,255,255,0.6) !important; background-color: rgba(255,255,255,0.15) !important; }
+    [data-testid="stFileUploaderDropzone"] *, [data-testid="stFileUploaderDropzoneInstructions"] * { color: #2D2D2D !important; }    [data-testid="stFileUploader"] button, [data-testid="stFileUploaderDropzone"] button { color: white !important; border-color: rgba(255,255,255,0.6) !important; background-color: rgba(255,255,255,0.15) !important; }
     [data-testid="stFileUploader"] button:hover { background-color: rgba(255,255,255,0.3) !important; }
-    [data-testid="stFileUploader"] svg, [data-testid="stFileUploaderDropzone"] svg { fill: white !important; stroke: white !important; color: white !important; }
+    [data-testid="stFileUploader"] svg, [data-testid="stFileUploaderDropzone"] svg { fill: #2D2D2D !important; stroke: #2D2D2D !important; color: #2D2D2D !important; }
     [data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"] p { color: white !important; }
     section[data-testid="stFileUploadDropzone"] * { color: white !important; }
     .kpi-card { background: white; border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid #3B7DD8; margin-bottom: 0.5rem; }
