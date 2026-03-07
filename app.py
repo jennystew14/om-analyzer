@@ -286,7 +286,85 @@ else:
     ov=ext.get("page_1_overview",{}); prop=ov.get("property_summary",{}); kpis=ov.get("kpis",{}); swot=ov.get("swot_analysis",{}); tr=ov.get("deal_transparency_report",{}); fin=ext.get("page_2_financials",{})
     with st.sidebar:
         if st.button("🔄 Analyze New OM",use_container_width=True): st.session_state.extracted=None; st.session_state.models=None; st.rerun()
-        st.markdown("---"); st.download_button("📥 Download JSON",json.dumps({"extracted":ext},indent=2,default=str),file_name="om_analysis.json",mime="application/json",use_container_width=True)
+        st.markdown("---")
+        st.download_button("📥 Download JSON (reload later)",json.dumps({"extracted":ext},indent=2,default=str),file_name="om_analysis.json",mime="application/json",use_container_width=True)
+        try:
+            import io
+            import xlsxwriter
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            bold = workbook.add_format({'bold': True})
+            money = workbook.add_format({'num_format': '$#,##0'})
+            pct = workbook.add_format({'num_format': '0.0%'})
+            ws1 = workbook.add_worksheet("Overview")
+            ws1.set_column('A:A', 25)
+            ws1.set_column('B:B', 40)
+            prop = ext.get("page_1_overview",{}).get("property_summary",{})
+            k = ext.get("page_1_overview",{}).get("kpis",{})
+            row = 0
+            ws1.write(row, 0, "Property Overview", bold)
+            row += 1
+            for key, val in prop.items():
+                ws1.write(row, 0, key.replace("_"," ").title())
+                ws1.write(row, 1, str(val) if val else "N/A")
+                row += 1
+            row += 1
+            ws1.write(row, 0, "Key Metrics", bold)
+            row += 1
+            for key, val in k.items():
+                ws1.write(row, 0, key.replace("_"," ").title())
+                if val is not None:
+                    ws1.write(row, 1, val)
+                else:
+                    ws1.write(row, 1, "N/A")
+                row += 1
+            row += 1
+            ws1.write(row, 0, "Deal Verdict", bold)
+            row += 1
+            verdict = ext.get("page_1_overview",{}).get("deal_verdict",{})
+            ws1.write(row, 0, "Recommendation"); ws1.write(row, 1, verdict.get("recommendation","N/A")); row += 1
+            ws1.write(row, 0, "Confidence"); ws1.write(row, 1, str(verdict.get("confidence","N/A")) + "/10"); row += 1
+            ws1.write(row, 0, "Summary"); ws1.write(row, 1, verdict.get("summary","")); row += 1
+            row += 1
+            ws1.write(row, 0, "Deal Ideas", bold)
+            row += 1
+            for deal in ext.get("page_1_overview",{}).get("deal_ideas",[]):
+                ws1.write(row, 0, deal.get("deal_name",""), bold)
+                row += 1
+                ws1.write(row, 0, "Offer Price"); ws1.write(row, 1, deal.get("offer_price","N/A")); row += 1
+                ws1.write(row, 0, "Strategy"); ws1.write(row, 1, deal.get("strategy","")); row += 1
+                ws1.write(row, 0, "Rationale"); ws1.write(row, 1, deal.get("rationale","")); row += 1
+                row += 1
+            ws2 = workbook.add_worksheet("Financials")
+            ws2.set_column('A:A', 20)
+            ws2.set_column('B:L', 15)
+            m = mods["base"]
+            headers = list(m["cash_flows"][0].keys())
+            for col, h in enumerate(headers):
+                ws2.write(0, col, h, bold)
+            for r, cf in enumerate(m["cash_flows"]):
+                for col, h in enumerate(headers):
+                    ws2.write(r + 1, col, cf[h])
+            ws3 = workbook.add_worksheet("Unit Mix")
+            umix = ext.get("page_3_lease_analysis",{}).get("unit_mix",[])
+            if umix:
+                for col, h in enumerate(umix[0].keys()):
+                    ws3.write(0, col, h.replace("_"," ").title(), bold)
+                for r, unit in enumerate(umix):
+                    for col, val in enumerate(unit.values()):
+                        ws3.write(r + 1, col, val if val else "N/A")
+            ws4 = workbook.add_worksheet("SWOT")
+            swot = ext.get("page_1_overview",{}).get("swot_analysis",{})
+            col = 0
+            for category in ["strengths","weaknesses","opportunities","threats"]:
+                ws4.write(0, col, category.title(), bold)
+                for r, item in enumerate(swot.get(category,[])):
+                    ws4.write(r + 1, col, item)
+                col += 1
+            workbook.close()
+            st.download_button("📊 Download Excel Report", output.getvalue(), file_name=f"om_analysis_{prop.get('property_name','property').replace(' ','_')}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.ml", use_container_width=True)
+        except Exception as e:
+            st.caption(f"Excel export error: {e}")
     t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
 
     with t1:
