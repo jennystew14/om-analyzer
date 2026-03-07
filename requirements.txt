@@ -3,3 +3,4 @@ anthropic>=0.40.0
 numpy-financial>=1.0.0
 pandas>=2.0.0
 PyMuPDF
+XlsxWriter
