@@ -404,7 +404,7 @@ else:
                 pdf.cell(col_w, 4, f"{cf['DSCR']:.2f}x" if cf["DSCR"] else "-")
                 pdf.cell(col_w, 4, f"{cf['CoC']*100:.1f}%" if cf["CoC"] else "-")
                 pdf.ln()
-           pdf.ln(5)
+             pdf.ln(5)
             mb = mods["base"]
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "Return Summary", ln=True)
