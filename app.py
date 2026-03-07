@@ -404,9 +404,19 @@ else:
                 pdf.cell(col_w, 4, f"{cf['DSCR']:.2f}x" if cf["DSCR"] else "-")
                 pdf.cell(col_w, 4, f"{cf['CoC']*100:.1f}%" if cf["CoC"] else "-")
                 pdf.ln()
-            pdf.ln(5)
+           pdf.ln(5)
             mb = mods["base"]
             pdf.set_font("Helvetica", "B", 11)
+            pdf.cell(0, 7, "Return Summary", ln=True)
+            pdf.set_font("Helvetica", "", 9)
+            pdf.cell(90, 5, "IRR"); pdf.cell(0, 5, f"{mb['irr']*100:.1f}%" if mb['irr'] else "N/A", ln=True)
+            pdf.cell(90, 5, "Equity Multiple"); pdf.cell(0, 5, f"{mb['equity_multiple']:.2f}x", ln=True)
+            pdf.cell(90, 5, "Net Profit"); pdf.cell(0, 5, fmt_d(mb['net_profit']), ln=True)
+            pdf_bytes = pdf.output()
+            st.download_button("📄 Download PDF Report", pdf_bytes, file_name=f"om_report_{prop.get('property_name','property').replace(' ','_')}.pdf", mime="application/pdf", use_container_width=True)
+        except Exception as e:
+            st.caption(f"PDF export error: {e}")
+    t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
 
     with t1:
         st.markdown(f'<div class="section-header">{prop.get("property_name","Property")}</div>',unsafe_allow_html=True)
