@@ -406,7 +406,7 @@ else:
                 pdf.ln()
             pdf.ln(5)
             mb = mods["base"]
-            pdf.set_font("Helvetica", "B", 11
+            pdf.set_font("Helvetica", "B", 11)
 
     with t1:
         st.markdown(f'<div class="section-header">{prop.get("property_name","Property")}</div>',unsafe_allow_html=True)
