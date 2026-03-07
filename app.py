@@ -247,11 +247,20 @@ def render_swot(t,items,c):
     st.markdown(f'<div class="swot-box {c}"><h4>{t}</h4><ul style="padding-left:1.2rem;margin:0;">{ih}</ul></div>',unsafe_allow_html=True)
 
 def extract_om(pdf_bytes):
+    import fitz
     client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
-    b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
-    msg = client.messages.create(model="claude-sonnet-4-5-20250929",max_tokens=16000,system=SYSTEM_PROMPT,messages=[{"role":"user","content":[{"type":"document","source":{"type":"base64","media_type":"application/pdf","data":b64}},{"type":"text","text":"Analyze this OM and return the structured JSON."}]}])
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    text = ""
+    for page in doc:
+        text += page.get_text() + "\n"
+    doc.close()
+    if len(text) > 100000:
+        text = text[:100000]
+    msg = client.messages.create(model="claude-sonnet-4-5-20250929",max_tokens=16000,system=SYSTEM_PROMPT,messages=[{"role":"user","content":[{"type":"text","text":"Here is the text extracted from an Offering Memorandum. Analyze it and return the structured JSON.\n\n" + text}]}])
     txt = msg.content[0].text.strip()
-    if txt.startswith("```"): txt=txt.split("\n",1)[1]; txt=txt.rsplit("```",1)[0]
+    if txt.startswith("```"):
+        txt = txt.split("\n",1)[1]
+        txt = txt.rsplit("```",1)[0]
     return json.loads(txt)
 
 st.markdown('<div class="main-header"><h1>🏢 Multifamily OM Analyzer</h1><p>Upload an Offering Memorandum and get instant investment analysis</p></div>',unsafe_allow_html=True)
