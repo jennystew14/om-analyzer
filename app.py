@@ -390,7 +390,7 @@ else:
             pdf.cell(0, 10, "10-Year Cash Flow (Base Case)", ln=True)
             pdf.set_font("Helvetica", "B", 7)
             cf_headers = ["Year", "NOI", "CapEx", "Debt Svc", "CF Post-Debt", "DSCR", "CoC"]
-            col_w = 27
+            col_w = 24
             for h in cf_headers:
                 pdf.cell(col_w, 5, h)
             pdf.ln()
