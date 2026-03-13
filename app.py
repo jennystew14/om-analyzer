@@ -294,6 +294,7 @@ else:
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
+        pdf.set_margin(10)
         pdf.set_font("Helvetica", "B", 18)
         pdf.cell(0, 12, prop.get("property_name", "Property"), ln=True)
         pdf.set_font("Helvetica", "", 9)
@@ -358,7 +359,6 @@ else:
             pdf.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
         pdf_bytes = pdf.output()
         st.download_button("📄 Download PDF Report", pdf_bytes, file_name="om_report.pdf", mime="application/pdf", use_container_width=True)
-        st.caption(f"PDF export error: {e}")
     t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
 
     with t1:
