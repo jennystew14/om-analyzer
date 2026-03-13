@@ -385,16 +385,16 @@ else:
                 pdf.multi_cell(0, 5, f"  RED FLAG: {flag}")
             for v in tr.get("assumptions_to_verify", []):
                 pdf.multi_cell(0, 5, f"  VERIFY: {v}")
-            pdf.add_page()
+            pdf.add_page("L")
             pdf.set_font("Helvetica", "B", 14)
             pdf.cell(0, 10, "10-Year Cash Flow (Base Case)", ln=True)
-            pdf.set_font("Helvetica", "B", 7)
+            pdf.set_font("Helvetica", "B", 6)
             cf_headers = ["Year", "NOI", "CapEx", "Debt Svc", "CF Post-Debt", "DSCR", "CoC"]
-            col_w = 24
+            col_w = 38
             for h in cf_headers:
                 pdf.cell(col_w, 5, h)
             pdf.ln()
-            pdf.set_font("Helvetica", "", 7)
+            pdf.set_font("Helvetica", "", 6)
             for cf in mods["base"]["cash_flows"]:
                 pdf.cell(col_w, 4, str(cf["Year"]))
                 pdf.cell(col_w, 4, fmt_d(cf["NOI"]) if cf["NOI"] else "-")
