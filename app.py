@@ -287,77 +287,72 @@ else:
     with st.sidebar:
         if st.button("🔄 Analyze New OM",use_container_width=True): st.session_state.extracted=None; st.session_state.models=None; st.rerun()
         st.markdown("---")
-        st.markdown("---")
-        st.markdown("---")
         st.download_button("📥 Download JSON (reload later)",json.dumps({"extracted":ext},indent=2,default=str),file_name="om_analysis.json",mime="application/json",use_container_width=True)
-        from fpdf import FPDF
-        pdf = FPDF()
-        pdf.set_auto_page_break(auto=True, margin=15)
-        pdf.add_page()
-        pdf.set_margin(10)
-        pdf.set_font("Helvetica", "B", 18)
-        pdf.cell(0, 12, prop.get("property_name", "Property"), ln=True)
-        pdf.set_font("Helvetica", "", 9)
-        pdf.cell(0, 6, "Generated " + datetime.now().strftime("%B %d, %Y"), ln=True)
-        pdf.ln(5)
-        verdict = ov.get("deal_verdict", {})
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 8, "VERDICT: " + str(verdict.get("recommendation", "N/A")), ln=True)
-        pdf.set_font("Helvetica", "", 9)
-        pdf.multi_cell(0, 5, str(verdict.get("summary", "")))
-        pdf.ln(3)
-        for p in verdict.get("key_positives", []):
-            pdf.multi_cell(0, 5, "  + " + str(p))
-        for c in verdict.get("key_concerns", []):
-            pdf.multi_cell(0, 5, "  - " + str(c))
-        pdf.ln(5)
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 8, "Deal Ideas", ln=True)
-        for deal in ov.get("deal_ideas", []):
-            pdf.set_font("Helvetica", "B", 10)
-            price = deal.get("offer_price")
-            pdf.cell(0, 6, str(deal.get("deal_name", "")) + ": " + (fmt_d(price) if price else "See rationale"), ln=True)
-            pdf.set_font("Helvetica", "", 8)
-            pdf.multi_cell(0, 4, "Strategy: " + str(deal.get("strategy", "")))
-            pdf.multi_cell(0, 4, "Rationale: " + str(deal.get("rationale", "")))
-            pdf.ln(2)
-        pdf.add_page()
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 8, "Key Metrics", ln=True)
-        pdf.set_font("Helvetica", "", 9)
-        for key, val in kpis.items():
-            label = key.replace("_", " ").title()
-            if val is not None:
-                pdf.cell(0, 5, label + ": " + str(val), ln=True)
-            else:
-                pdf.cell(0, 5, label + ": N/A", ln=True)
-        pdf.ln(5)
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 8, "SWOT Analysis", ln=True)
-        swot_data = ov.get("swot_analysis", {})
-        for cat in ["strengths", "weaknesses", "opportunities", "threats"]:
-            pdf.set_font("Helvetica", "B", 10)
-            pdf.cell(0, 6, cat.title(), ln=True)
-            pdf.set_font("Helvetica", "", 8)
-            for item in swot_data.get(cat, []):
-                pdf.multi_cell(0, 4, "  - " + str(item))
-            pdf.ln(2)
-        pdf.add_page()
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 8, "Cash Flow Summary", ln=True)
-        pdf.set_font("Helvetica", "", 9)
-        mb = mods["base"]
-        if mb["irr"]:
-            pdf.cell(0, 5, "IRR: " + str(round(mb["irr"]*100,1)) + "%", ln=True)
-        pdf.cell(0, 5, "Equity Multiple: " + str(mb["equity_multiple"]) + "x", ln=True)
-        pdf.cell(0, 5, "Net Profit: " + fmt_d(mb["net_profit"]), ln=True)
-        pdf.ln(3)
-        pdf.set_font("Helvetica", "", 8)
-        for cf in mb["cash_flows"]:
-            if cf["Year"] == 0:
-                continue
-            pdf.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
-        pdf_bytes = pdf.output()
+        def make_pdf():
+            from fpdf import FPDF
+            p = FPDF()
+            p.set_auto_page_break(auto=True, margin=15)
+            p.add_page()
+            p.set_margin(10)
+            p.set_font("Helvetica", "B", 18)
+            p.cell(0, 12, str(prop.get("property_name", "Property")), ln=True)
+            p.set_font("Helvetica", "", 9)
+            p.cell(0, 6, "Generated " + datetime.now().strftime("%B %d, %Y"), ln=True)
+            p.ln(5)
+            v = ov.get("deal_verdict", {})
+            p.set_font("Helvetica", "B", 13)
+            p.cell(0, 8, "VERDICT: " + str(v.get("recommendation", "N/A")), ln=True)
+            p.set_font("Helvetica", "", 9)
+            p.multi_cell(0, 5, str(v.get("summary", "")))
+            p.ln(3)
+            for item in v.get("key_positives", []):
+                p.multi_cell(0, 5, "+ " + str(item))
+            for item in v.get("key_concerns", []):
+                p.multi_cell(0, 5, "- " + str(item))
+            p.ln(5)
+            p.set_font("Helvetica", "B", 13)
+            p.cell(0, 8, "Deal Ideas", ln=True)
+            for deal in ov.get("deal_ideas", []):
+                p.set_font("Helvetica", "B", 10)
+                price = deal.get("offer_price")
+                p.cell(0, 6, str(deal.get("deal_name", "")) + ": " + (fmt_d(price) if price else "TBD"), ln=True)
+                p.set_font("Helvetica", "", 8)
+                p.multi_cell(0, 4, str(deal.get("strategy", "")))
+                p.multi_cell(0, 4, str(deal.get("rationale", "")))
+                p.ln(2)
+            p.add_page()
+            p.set_font("Helvetica", "B", 13)
+            p.cell(0, 8, "Key Metrics", ln=True)
+            p.set_font("Helvetica", "", 9)
+            for key, val in kpis.items():
+                p.cell(0, 5, key.replace("_", " ").title() + ": " + str(val if val else "N/A"), ln=True)
+            p.add_page()
+            p.set_font("Helvetica", "B", 13)
+            p.cell(0, 8, "SWOT Analysis", ln=True)
+            for cat in ["strengths", "weaknesses", "opportunities", "threats"]:
+                p.set_font("Helvetica", "B", 10)
+                p.cell(0, 6, cat.title(), ln=True)
+                p.set_font("Helvetica", "", 8)
+                for item in ov.get("swot_analysis", {}).get(cat, []):
+                    p.multi_cell(0, 4, "- " + str(item))
+                p.ln(2)
+            p.add_page()
+            p.set_font("Helvetica", "B", 13)
+            p.cell(0, 8, "Cash Flow Summary", ln=True)
+            p.set_font("Helvetica", "", 9)
+            mb = mods["base"]
+            if mb["irr"]:
+                p.cell(0, 5, "IRR: " + str(round(mb["irr"]*100, 1)) + "%", ln=True)
+            p.cell(0, 5, "Equity Multiple: " + str(mb["equity_multiple"]) + "x", ln=True)
+            p.cell(0, 5, "Net Profit: " + fmt_d(mb["net_profit"]), ln=True)
+            p.ln(3)
+            p.set_font("Helvetica", "", 8)
+            for cf in mb["cash_flows"]:
+                if cf["Year"] == 0:
+                    continue
+                p.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
+            return p.output()
+        pdf_bytes = make_pdf()
         st.download_button("📄 Download PDF Report", pdf_bytes, file_name="om_report.pdf", mime="application/pdf", use_container_width=True)
     t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
 
