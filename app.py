@@ -288,72 +288,53 @@ else:
         if st.button("🔄 Analyze New OM",use_container_width=True): st.session_state.extracted=None; st.session_state.models=None; st.rerun()
         st.markdown("---")
         st.download_button("📥 Download JSON (reload later)",json.dumps({"extracted":ext},indent=2,default=str),file_name="om_analysis.json",mime="application/json",use_container_width=True)
-        def make_pdf():
-            from fpdf import FPDF
-            p = FPDF()
-            p.set_auto_page_break(auto=True, margin=15)
-            p.add_page()
-            p.set_margin(10)
-            p.set_font("Helvetica", "B", 18)
-            p.cell(0, 12, str(prop.get("property_name", "Property")), ln=True)
-            p.set_font("Helvetica", "", 9)
-            p.cell(0, 6, "Generated " + datetime.now().strftime("%B %d, %Y"), ln=True)
-            p.ln(5)
-            v = ov.get("deal_verdict", {})
-            p.set_font("Helvetica", "B", 13)
-            p.cell(0, 8, "VERDICT: " + str(v.get("recommendation", "N/A")), ln=True)
-            p.set_font("Helvetica", "", 9)
-            p.multi_cell(190, 5, str(v.get("summary", "")))
-            p.ln(3)
-            for item in v.get("key_positives", []):
-                p.multi_cell(190, 5, "+ " + str(item))
-            for item in v.get("key_concerns", []):
-                p.multi_cell(190, 5, "- " + str(item))
-            p.ln(5)
-            p.set_font("Helvetica", "B", 13)
-            p.cell(0, 8, "Deal Ideas", ln=True)
-            for deal in ov.get("deal_ideas", []):
-                p.set_font("Helvetica", "B", 10)
-                price = deal.get("offer_price")
-                p.cell(0, 6, str(deal.get("deal_name", "")) + ": " + (fmt_d(price) if price else "TBD"), ln=True)
-                p.set_font("Helvetica", "", 8)
-                p.multi_cell(190, 4, str(deal.get("strategy", "")))
-                p.multi_cell(190, 4, str(deal.get("rationale", "")))
-                p.ln(2)
-            p.add_page()
-            p.set_font("Helvetica", "B", 13)
-            p.cell(0, 8, "Key Metrics", ln=True)
-            p.set_font("Helvetica", "", 9)
-            for key, val in kpis.items():
-                p.cell(0, 5, key.replace("_", " ").title() + ": " + str(val if val else "N/A"), ln=True)
-            p.add_page()
-            p.set_font("Helvetica", "B", 13)
-            p.cell(0, 8, "SWOT Analysis", ln=True)
-            for cat in ["strengths", "weaknesses", "opportunities", "threats"]:
-                p.set_font("Helvetica", "B", 10)
-                p.cell(0, 6, cat.title(), ln=True)
-                p.set_font("Helvetica", "", 8)
-                for item in ov.get("swot_analysis", {}).get(cat, []):
-                    p.multi_cell(190, 4, "- " + str(item))
-                p.ln(2)
-            p.add_page()
-            p.set_font("Helvetica", "B", 13)
-            p.cell(0, 8, "Cash Flow Summary", ln=True)
-            p.set_font("Helvetica", "", 9)
-            mb = mods["base"]
-            if mb["irr"]:
-                p.cell(0, 5, "IRR: " + str(round(mb["irr"]*100, 1)) + "%", ln=True)
-            p.cell(0, 5, "Equity Multiple: " + str(mb["equity_multiple"]) + "x", ln=True)
-            p.cell(0, 5, "Net Profit: " + fmt_d(mb["net_profit"]), ln=True)
-            p.ln(3)
-            p.set_font("Helvetica", "", 8)
-            for cf in mb["cash_flows"]:
-                if cf["Year"] == 0:
-                    continue
+        if st.button("🖨️ Print Full Report", use_container_width=True):
+            st.session_state.show_print = True
                 p.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
             return bytes(p.output())
         pdf_bytes = make_pdf()
         st.download_button("📄 Download PDF Report", pdf_bytes, file_name="om_report.pdf", mime="application/pdf", use_container_width=True)
+    if st.session_state.get("show_print", False):
+        st.session_state.show_print = False
+        st.markdown('<div class="section-header">FULL REPORT — Use Cmd+P to save as PDF</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="prop-detail-box"><strong>Property:</strong> {prop.get("property_name","N/A")}<br><strong>Address:</strong> {prop.get("address","N/A")}, {prop.get("city","")}, {prop.get("state","")} {prop.get("zip","")}<br><strong>Asking Price:</strong> {fmt_d(kpis.get("asking_price"))}<br><strong>Units:</strong> {prop.get("total_units","N/A")} | <strong>Year Built:</strong> {prop.get("year_built","N/A")}</div>', unsafe_allow_html=True)
+        verdict = ov.get("deal_verdict", {})
+        rec = verdict.get("recommendation", "").upper().strip()
+        conf = verdict.get("confidence", "?")
+        summary = verdict.get("summary", "")
+        vc = "verdict-yes" if rec == "YES" else ("verdict-no" if rec == "NO" else "verdict-maybe")
+        vl = "DO THIS DEAL" if rec == "YES" else ("PASS ON THIS DEAL" if rec == "NO" else "PROCEED WITH CAUTION")
+        st.markdown(f'<div class="{vc}"><h2>VERDICT: {vl}</h2><p><strong>Confidence: {conf}/10</strong></p><p>{summary}</p></div>', unsafe_allow_html=True)
+        for deal in ov.get("deal_ideas", []):
+            price = deal.get("offer_price")
+            st.markdown(f'<div class="deal-card"><h3>{deal.get("deal_name","")}: {fmt_d(price) if price else "TBD"}</h3><p><strong>Strategy:</strong> {deal.get("strategy","")}</p><p><strong>Rationale:</strong> {deal.get("rationale","")}</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="subsection-header">Key Performance Indicators</div>', unsafe_allow_html=True)
+        for key, val in kpis.items():
+            label = key.replace("_", " ").title()
+            if val is not None:
+                if "pct" in key or "rate" in key: st.markdown(f"**{label}:** {fmt_p(val)}")
+                elif "price" in key or "noi" in key or "rent" in key: st.markdown(f"**{label}:** {fmt_d(val)}")
+                else: st.markdown(f"**{label}:** {val}")
+        st.markdown('<div class="subsection-header">SWOT Analysis</div>', unsafe_allow_html=True)
+        swot_data = ov.get("swot_analysis", {})
+        for cat in ["strengths", "weaknesses", "opportunities", "threats"]:
+            st.markdown(f"**{cat.title()}:**")
+            for item in swot_data.get(cat, []): st.markdown(f"- {item}")
+        st.markdown('<div class="subsection-header">Deal Transparency Report</div>', unsafe_allow_html=True)
+        for fl in tr.get("red_flags", []): st.markdown(f'<div class="red-flag">🚩 {fl}</div>', unsafe_allow_html=True)
+        for v in tr.get("assumptions_to_verify", []): st.markdown(f"❓ {v}")
+        st.markdown('<div class="subsection-header">Cash Flow Summary (Base Case)</div>', unsafe_allow_html=True)
+        mb = mods["base"]
+        st.markdown(f"**IRR:** {mb['irr']*100:.1f}%" if mb['irr'] else "**IRR:** N/A")
+        st.markdown(f"**Equity Multiple:** {mb['equity_multiple']:.2f}x")
+        st.markdown(f"**Net Profit:** {fmt_d(mb['net_profit'])}")
+        st.dataframe(pd.DataFrame(mods["base"]["cash_flows"]), use_container_width=True, hide_index=True)
+        st.markdown('<div class="subsection-header">Unit Mix</div>', unsafe_allow_html=True)
+        um = ext.get("page_3_lease_analysis", {}).get("unit_mix", [])
+        if um: st.dataframe(pd.DataFrame(um), use_container_width=True, hide_index=True)
+        st.markdown("---")
+        st.markdown("**Press Cmd+P (Mac) or Ctrl+P (Windows) → Save as PDF**")
+        st.stop()
     t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
 
     with t1:
