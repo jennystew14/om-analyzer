@@ -385,26 +385,16 @@ else:
                 pdf.multi_cell(0, 5, f"  RED FLAG: {flag}")
             for v in tr.get("assumptions_to_verify", []):
                 pdf.multi_cell(0, 5, f"  VERIFY: {v}")
-            pdf.add_page("L")
+            pdf.add_page()
             pdf.set_font("Helvetica", "B", 14)
-            pdf.cell(0, 10, "10-Year Cash Flow (Base Case)", ln=True)
-            pdf.set_font("Helvetica", "B", 6)
-            cf_headers = ["Year", "NOI", "CapEx", "Debt Svc", "CF Post-Debt", "DSCR", "CoC"]
-            col_w = 38
-            for h in cf_headers:
-                pdf.cell(col_w, 5, h)
-            pdf.ln()
-            pdf.set_font("Helvetica", "", 6)
+            pdf.cell(0, 10, "10-Year Cash Flow Summary (Base Case)", ln=True)
+            pdf.set_font("Helvetica", "", 9)
             for cf in mods["base"]["cash_flows"]:
-                pdf.cell(col_w, 4, str(cf["Year"]))
-                pdf.cell(col_w, 4, fmt_d(cf["NOI"]) if cf["NOI"] else "-")
-                pdf.cell(col_w, 4, fmt_d(cf["CapEx"]) if cf["CapEx"] else "-")
-                pdf.cell(col_w, 4, fmt_d(cf["Debt Service"]) if cf["Debt Service"] else "-")
-                pdf.cell(col_w, 4, fmt_d(cf["CF Post-Debt"]) if cf["CF Post-Debt"] else "-")
-                pdf.cell(col_w, 4, f"{cf['DSCR']:.2f}x" if cf["DSCR"] else "-")
-                pdf.cell(col_w, 4, f"{cf['CoC']*100:.1f}%" if cf["CoC"] else "-")
-                pdf.ln()
-                pdf.ln(5)
+                yr = cf["Year"]
+                if yr == 0:
+                    pdf.cell(0, 5, f"Year 0: Equity Investment {fmt_d(cf['Levered CF'])}", ln=True)
+                else:
+                    pdf.cell(0, 5, f"Year {yr}: NOI {fmt_d(cf['NOI'])} | Debt Svc {fmt_d(cf['Debt Service'])} | CF {fmt_d(cf['CF Post-Debt'])} | DSCR {cf['DSCR']:.2f}x | CoC {cf['CoC']*100:.1f}%", ln=True)
             mb = mods["base"]
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "Return Summary", ln=True)
