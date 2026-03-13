@@ -351,7 +351,7 @@ else:
                 if cf["Year"] == 0:
                     continue
                 p.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
-            return p.output()
+            return bytes(p.output())
         pdf_bytes = make_pdf()
         st.download_button("📄 Download PDF Report", pdf_bytes, file_name="om_report.pdf", mime="application/pdf", use_container_width=True)
     t1,t2,t3,t4,t5=st.tabs(["📋 Overview","💰 Financials","📄 Lease Analysis","🏙️ Market","🤝 Broker Assumptions"])
