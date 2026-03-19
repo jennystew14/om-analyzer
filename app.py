@@ -290,7 +290,6 @@ else:
         st.download_button("📥 Download JSON (reload later)",json.dumps({"extracted":ext},indent=2,default=str),file_name="om_analysis.json",mime="application/json",use_container_width=True)
         if st.button("🖨️ Print Full Report", use_container_width=True):
             st.session_state.show_print = True
-            p.cell(0, 4, "Yr " + str(cf["Year"]) + ": NOI " + fmt_d(cf["NOI"]) + " | CF " + fmt_d(cf["CF Post-Debt"]), ln=True)
     if st.session_state.get("show_print", False):
         st.session_state.show_print = False
         st.markdown('<div class="section-header">FULL REPORT — Use Cmd+P to save as PDF</div>', unsafe_allow_html=True)
