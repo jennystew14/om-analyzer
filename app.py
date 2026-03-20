@@ -74,6 +74,7 @@ st.markdown("""
     .stMarkdown p, .stMarkdown li, .stMarkdown span { color: #2D2D2D !important; }
     .stMarkdown strong { color: #1B2A4A !important; }
     [data-testid="stNumberInput"] label { color: #2D2D2D !important; font-weight: 500 !important; }
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] div, [data-testid="stSidebar"] label, [data-testid="stSidebar"] button { color: white !important; -webkit-text-fill-color: white !important; }
 </style>
 """, unsafe_allow_html=True)
 
